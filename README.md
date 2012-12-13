@@ -15,7 +15,7 @@ You should have a properly configured pom to use this. Configuration implies
 + properly configuring the surefire and failsafe plugins (just copy the
 pom given in the example)
 
-
+Example :
 
 ```xml
 <dependencies>
@@ -82,15 +82,20 @@ pom given in the example)
 
 
 ### Abstract class :
-Some value of the 
-+ setUp and tearDown : just make sure you put the duplicate the annotations
+You can override some value of the Abstract class :
++ ***setUp and tearDown*** : just make sure you put the duplicate the annotations
 when overriding.
-+ delayBetweenTestInMs : delay before each test
-+ ignoredBundlesURLPatterns: A pattern used to filter bundles URL (each
++ ***delayBetweenTestInMs*** : delay before each test
++ ***ignoredBundlesURLPatterns***: A pattern used to filter bundles URL (each
 bundle's URL is tested against this pattern)
-+ ignoredBundlesSymbolicNamePatterns : A pattern used to filter bundles
++ ***ignoredBundlesSymbolicNamePatterns*** : A pattern used to filter bundles
 symbolic name (each bundle's name is tested against this pattern)
++ ***configureJAVAProperties*** : Called before each test to set-up properties. 
+Can be overridden to  customize JAVA properties.
++ ***getBundleList*** : Compute the bundle list. Can be overridden to add new bundles (e.g. non-maven bundle) to the list. 
+You should use the properties to filter (ignoredBundlesURLPatterns and ignoredBundlesSymbolicNamePatterns)
 
+Example :
 
 ```java
   /**
