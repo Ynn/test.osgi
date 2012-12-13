@@ -38,16 +38,89 @@ import de.kalpatec.pojosr.framework.launch.PojoServiceRegistryFactory;
 /**
  * Common functionality for PojoSR-based tests.
  * 
+ * <p>
+ * Extend this class to ease the writing of POJOSR testng tests. See
+ * pojosr-example for an example of use.
+ * </p>
+ * 
+ * <p>
+ * You should have a properly configured pom to use this. Configuration implies
+ * :
+ * <ul>
+ * <li>importing test-pojosr as a test dependency</li>
+ * <li>importing each wanted bundles as a test dependency</li>
+ * <li><properly configuring the surefire and failsafe plugins (just copy the
+ * pom given in the example)</li>
+ * </ul>
+ * 
+ * </p>
+ * 
+ * <p>
+ * Customizations :
+ * <ul>
+ * <li>setUp and tearDown : just make sure you put the duplicate the annotations
+ * when overriding.</li>
+ * <li>delayBetweenTestInMs : delay before each test</li>
+ * <li>ignoredBundlesURLPatterns: A pattern used to filter bundles URL (each
+ * bundle's URL is tested against this pattern)</li>
+ * <li>ignoredBundlesSymbolicNamePatterns : A pattern used to filter bundles
+ * symbolic name (each bundle's name is tested against this pattern)
+ * <li>
+ * </ul>
+ * </ul>
+ * 
+ * <p>
+ * Limitations :
+ * <ul>
+ * <li>This project is designed for light and small tests. Using pojosr in a
+ * highly multi-threaded environment is unforseable.</li>
+ * <li>You should not consider that all bundle have been started when the first
+ * test is runned. This is why we use a delay between tests.</li>
+ * <li>POJO-SR use a unique classloader. Pay attention to versions and
+ * overlapping names.</li>
+ * </ul>
+ * </p>
+ * 
+ * @author yoann.maurel@imag.fr
  */
 public abstract class AbstractOSGiTestCase {
 
+	/**
+	 * The registry used to register services
+	 */
 	protected PojoServiceRegistry registry;
+
+	/**
+	 * The framework bundle Context
+	 */
 	protected BundleContext context;
+
+	/**
+	 * A pattern used to filter bundles URL (each bundle's URL is tested against
+	 * this pattern)
+	 */
 	protected String ignoredBundlesURLPatterns = ".*jcommander.*|.*testng.*|.*snakeyaml.*|.*beanshell.*|.*surefire.*|.*junit.*|.*asm.*";
+
+	/**
+	 * A pattern used to filter bundles symbolic name (each bundle's name is
+	 * tested against this pattern)
+	 */
 	protected String ignoredBundlesSymbolicNamePatterns = "";
+
+	/**
+	 * Delay to wait between each test (can be customized by overriding the
+	 * setUp() method.
+	 */
 	protected long delayBetweenTestInMs = 200;
 
+	/**
+	 * This property is used by POJOSR to know where to store the cache
+	 */
 	private static final String OSGI_FRAMEWORK_STORAGE = "org.osgi.framework.storage";
+
+	/**
+	 * The default build dir of the project (maven use target by default)
+	 */
 	private static final String BUILD_DIR = "target";
 
 	@BeforeMethod
