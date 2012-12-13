@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>bundle</packaging> <!-- Use the BND Maven plug-in -->
+
+	<!-- Project parent -->
+	<parent>
+		<groupId>fr.liglab.adele.common</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>parent</relativePath>
+	</parent>
+
+	<!-- Project Description -->
+	<artifactId>tests-pojosr-example</artifactId>
+	<name>${productName} :: ${projectName}</name>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>fr.liglab.adele.common</groupId>
+			<version>1.0.0-SNAPSHOT</version>
+			<artifactId>test-pojosr</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.pojosr</groupId>
+			<artifactId>de.kalpatec.pojosr.framework</artifactId>
+			<version>0.2.1</version>
+			<type>bundle</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.1.1</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.ipojo</artifactId>
+			<version>1.8.4</version>
+			<type>bundle</type>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+
+			<!-- BND Maven Plugin Configuration -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Export-Package>test.example</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<!-- iPOJO Maven Plugin Configuration : nothing to do -->
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-ipojo-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>ipojo-bundle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<!-- TEST -->
+			<!-- *** Surefire plugin: run unit and exclude integration tests *** -->
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<!-- All Integration tests must be ignored during the test phases and 
+						be postponed to the integration-test phases -->
+					<excludes>
+						<!-- Integration tests begin with IT -->
+						<exclude>**/IT*.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<!-- *** Failsafe plugin: run integration tests *** -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>2.12.4</version>
+				<configuration>
+					<additionalClasspathElements>
+						<!-- Get the bundle and add it to the classpath (it will be discovered 
+							by pojosr) -->
+						<additionalClasspathElement>${build.directory}/${build.finalName}.jar</additionalClasspathElement>
+					</additionalClasspathElements>
+					<!-- /!\ hack to avoid the compiled non-manipulated classes of the bundle 
+						to be in the classpath (they would have precedence over the bundle otherwise) -->
+					<classesDirectory>${build.directory}/null</classesDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
