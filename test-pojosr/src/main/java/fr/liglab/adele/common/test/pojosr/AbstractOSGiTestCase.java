@@ -36,7 +36,7 @@ import de.kalpatec.pojosr.framework.launch.PojoServiceRegistry;
 import de.kalpatec.pojosr.framework.launch.PojoServiceRegistryFactory;
 
 /**
- * Common functionality for PojoSR-based tests.
+ * Abstract class for PojoSR-based tests.
  * 
  * <p>
  * Extend this class to ease the writing of POJOSR testng tests. See
