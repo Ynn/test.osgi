@@ -89,7 +89,7 @@
 						<additionalClasspathElement>${build.directory}/${build.finalName}.jar</additionalClasspathElement>
 					</additionalClasspathElements>
 					<!-- /!\ hack to avoid the compiled non-manipulated classes of the bundle 
-						to be in the classpath (they would have precedence over the bundle otherwise) -->
+						to be in the classpath (they would otherwise take precedence over the bundle's classes) -->
 					<classesDirectory>${build.directory}/null</classesDirectory>
 				</configuration>
 				<executions>
