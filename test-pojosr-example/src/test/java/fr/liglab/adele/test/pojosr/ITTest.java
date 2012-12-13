@@ -14,17 +14,29 @@ import test.example.Hello;
 import de.kalpatec.pojosr.framework.launch.ClasspathScanner;
 import fr.liglab.adele.common.test.pojosr.AbstractOSGiTestCase;
 
+/**
+ * Test performed during the integration-test phases. Pay attention to the IT*
+ * name.
+ * 
+ * @author yo
+ * 
+ */
 public class ITTest extends AbstractOSGiTestCase {
 
+	/**
+	 * Customization of the set up Pay attention to the annotation :
+	 */
 	@Override
 	@BeforeMethod
 	public void setUp() throws Exception {
 		System.out.println("==========================TEST SETUP");
 
+		// add new ignored bundles to the list (i.e ipojo useless bundles)
 		ignoredBundlesURLPatterns = ignoredBundlesURLPatterns
 				+ "|.*ipojo\\.manipulator.*|.*ipojo\\.annotations.*";
 		delayBetweenTestInMs = 200;
 
+		// call the parent (!! don't forget that)
 		super.setUp();
 	}
 

@@ -18,27 +18,13 @@
 
 	<dependencies>
 
+		<!-- Use POJOSR to test -->
 		<dependency>
 			<groupId>fr.liglab.adele.common</groupId>
 			<version>1.0.0-SNAPSHOT</version>
 			<artifactId>test-pojosr</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.googlecode.pojosr</groupId> -->
-<!-- 			<artifactId>de.kalpatec.pojosr.framework</artifactId> -->
-<!-- 			<version>0.2.1</version> -->
-<!-- 			<type>bundle</type> -->
-<!-- 		</dependency> -->
-
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.testng</groupId> -->
-<!-- 			<artifactId>testng</artifactId> -->
-<!-- 			<version>6.1.1</version> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency> -->
-
 
 		<dependency>
 			<groupId>org.apache.felix</groupId>

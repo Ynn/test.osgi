@@ -43,44 +43,6 @@ import de.kalpatec.pojosr.framework.launch.PojoServiceRegistryFactory;
  * pojosr-example for an example of use.
  * </p>
  * 
- * <p>
- * You should have a properly configured pom to use this. Configuration implies
- * :
- * <ul>
- * <li>importing test-pojosr as a test dependency</li>
- * <li>importing each wanted bundles as a test dependency</li>
- * <li><properly configuring the surefire and failsafe plugins (just copy the
- * pom given in the example)</li>
- * </ul>
- * 
- * </p>
- * 
- * <p>
- * Customizations :
- * <ul>
- * <li>setUp and tearDown : just make sure you put the duplicate the annotations
- * when overriding.</li>
- * <li>delayBetweenTestInMs : delay before each test</li>
- * <li>ignoredBundlesURLPatterns: A pattern used to filter bundles URL (each
- * bundle's URL is tested against this pattern)</li>
- * <li>ignoredBundlesSymbolicNamePatterns : A pattern used to filter bundles
- * symbolic name (each bundle's name is tested against this pattern)
- * <li>
- * </ul>
- * </ul>
- * 
- * <p>
- * Limitations :
- * <ul>
- * <li>This project is designed for light and small tests. Using pojosr in a
- * highly multi-threaded environment is unforseable.</li>
- * <li>You should not consider that all bundle have been started when the first
- * test is runned. This is why we use a delay between tests.</li>
- * <li>POJO-SR use a unique classloader. Pay attention to versions and
- * overlapping names.</li>
- * </ul>
- * </p>
- * 
  * @author yoann.maurel@imag.fr
  */
 public abstract class AbstractOSGiTestCase {
@@ -123,6 +85,13 @@ public abstract class AbstractOSGiTestCase {
 	 */
 	private static final String BUILD_DIR = "target";
 
+	/**
+	 * Set up the framework (configure Java and the OSGi environment).
+	 * 
+	 * YOU SHOULD KEEP THE ANNOTATION IF YOU OVERRIDE.
+	 * 
+	 * @throws Exception
+	 */
 	@BeforeMethod
 	public void setUp() throws Exception {
 		configureJAVAProperties();
@@ -131,25 +100,49 @@ public abstract class AbstractOSGiTestCase {
 		ServiceLoader<PojoServiceRegistryFactory> loader = ServiceLoader
 				.load(PojoServiceRegistryFactory.class);
 
+		// Build a new framework
 		registry = loader.iterator().next()
 				.newPojoServiceRegistry(getOSGiProperties());
 
+		// Keep a track of the fk bundle context
 		context = registry.getBundleContext();
+
+		// Wait before testing (the time for bundle to start)
 		Thread.sleep(delayBetweenTestInMs);
 	}
 
+	/**
+	 * Teard down the framework (configure Java and the OSGi environment).
+	 * 
+	 * YOU SHOULD KEEP THE ANNOTATION IF YOU OVERRIDE.
+	 * 
+	 * @throws Exception
+	 */
 	@AfterMethod
 	public void tearDown() throws Exception {
 		context.getBundle().stop();
 	}
 
+	/**
+	 * Called before each test to set-up properties. Can be overridden to
+	 * customize JAVA properties.
+	 */
 	protected void configureJAVAProperties() {
+		// Create a random unique cache dir for each test method :
 		UUID randomUUID = UUID.randomUUID();
 		System.setProperty(AbstractOSGiTestCase.OSGI_FRAMEWORK_STORAGE,
 				AbstractOSGiTestCase.BUILD_DIR + "/osgi-cache/" + randomUUID);
 
 	}
 
+	/**
+	 * Compute the bundle list. Can be overridden to add new bundles (e.g.
+	 * non-maven bundle) to the list. You should use the properties to filter
+	 * (ignoredBundlesURLPatterns and ignoredBundlesSymbolicNamePatterns)
+	 * 
+	 * @return the list of bundles (BundleDescriptor) to be started.
+	 * @throws Exception
+	 */
 	protected List<BundleDescriptor> getBundleList() throws Exception {
 		List<BundleDescriptor> bundleDescriptors = new ClasspathScanner()
 				.scanForBundles();
@@ -171,6 +164,12 @@ public abstract class AbstractOSGiTestCase {
 		return bundleDescriptors;
 	}
 
+	/**
+	 * Set the properties of the OSGi framework
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	protected Map<String, Object> getOSGiProperties() throws Exception {
 		Map<String, Object> config = new HashMap<String, Object>();
 		config.put(PojoServiceRegistryFactory.BUNDLE_DESCRIPTORS,

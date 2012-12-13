@@ -4,11 +4,13 @@ import java.io.File;
 
 import org.testng.annotations.Test;
 
-import fr.liglab.adele.common.test.pojosr.AbstractOSGiTestCase;
-
-
-
-public class UnitTest extends AbstractOSGiTestCase {
+/**
+ * Stupid unit testing
+ * 
+ * @author yo
+ * 
+ */
+public class UnitTest {
 
 	@Test
 	public void showTarget() {
@@ -18,6 +20,5 @@ public class UnitTest extends AbstractOSGiTestCase {
 			System.out.println(file.getName());
 		}
 	}
-
 
 }
