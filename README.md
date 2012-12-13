@@ -1,4 +1,4 @@
-#Common functionality for PojoSR-based tests.
+#PojoSR-based tests how-to
 
 
 ##Usage
